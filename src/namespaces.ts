@@ -11,7 +11,7 @@ module.exports = function (RED: any) {
         node.msg = {};
 
         node.on('input', (msg, send, done) => {
-            msg = RED.util.cloneMessage(msg);
+            node.msg = RED.util.cloneMessage(msg);
             send = send || function () { node.send.apply(node, arguments) }
             onInput(node, getConfig(RED.nodes.getNode(n.kubeconfig), RED, n, msg), msg, send, done);
         });
@@ -23,20 +23,13 @@ module.exports = function (RED: any) {
             kc.loadFromFile(config.path || join(__dirname, 'kubeconfig'));
             kc.setCurrentContext(config.context);
             const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
-
+            
             if (!config.action || config.action === "get") {
-                const res = await k8sApi.readNamespacedSecret(config.body.metadata.name, config.namespace)
-                send(Object.assign(msg, {
+                const res = await k8sApi.listNamespace()
+                send(Object.assign(node.msg, {
                     payload: res.body
                 }));
-            }
-            else if (config.action === "list") {
-                const res = await k8sApi.listNamespacedSecret(config.namespace)
-                send(Object.assign(msg, {
-                    payload: res.body
-                }));
-            }
-            else if (config.action === "create") {
+            } else if (config.action === "create") {
                 let namespace;
 
                 try {
@@ -44,23 +37,15 @@ module.exports = function (RED: any) {
                 }
                 catch {
                     if (!namespace || namespace.body?.metadata?.name !== config.namespace) {
-                        await k8sApi.createNamespace({
+                        const res =  await k8sApi.createNamespace({
                             metadata: {
                                 name: config.namespace
                             }
                         })
+                        send(Object.assign(node.msg, {
+                            payload: res.body
+                        }));
                     }
-                }
-
-                try {
-                    const res = await k8sApi.createNamespacedSecret(config.namespace, config.body)
-                    send(Object.assign(node.msg, {
-                        payload: res.body
-                    }));
-                } catch {
-                    send(Object.assign(node.msg, {
-
-                    }));
                 }
             }
 
@@ -81,5 +66,5 @@ module.exports = function (RED: any) {
     }
 
 
-    RED.nodes.registerType('k8s-secrets', node);
+    RED.nodes.registerType('k8s-namespaces', node);
 };

@@ -8,6 +8,7 @@ module.exports = function (RED: any) {
 
         this.name = config.name;
         this.kubeconfig = config.kubeconfig;
+        this.path = config.path;
 
        
     }

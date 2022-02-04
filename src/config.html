@@ -6,12 +6,15 @@
             defaults: {
                 kubeconfig: {
                     value: '',
-                },               
+                }, 
+                path: {
+                    value: '',
+                },
                 name: {
                     value: '',
                 },
-               
-            },          
+
+            },
             paletteLabel: "config",
             label: function () {
                 if (this.name) {
@@ -21,7 +24,7 @@
             },
             oneditprepare: function () {
                 var node = this;
-                
+
             },
         });
 </script>
@@ -59,10 +62,15 @@
             <span>kubeconfig</span></label>
         <input type="text" id="node-config-input-kubeconfig" placeholder="" style="width:100% !important">
     </div>
-  
+    <div class="form-row event">
+        <label for="node-config-input-path" style="min-width:160px !important">
+            <i class="fa fa-link"></i>
+            <span>path to kubeconfig</span></label>
+        <input type="text" id="node-config-input-path" placeholder="" style="width:100% !important">
+    </div>
 </script>
 
 <script type="text/html" data-help-name="k8s-config">
-    
+
 
 </script>
