@@ -1,0 +1,68 @@
+<script type="text/javascript">
+    RED
+        .nodes
+        .registerType('k8s-config', {
+            category: 'config',
+            defaults: {
+                kubeconfig: {
+                    value: '',
+                },               
+                name: {
+                    value: '',
+                },
+               
+            },          
+            paletteLabel: "config",
+            label: function () {
+                if (this.name) {
+                    return this.name;
+                }
+                return 'k8s Config';
+            },
+            oneditprepare: function () {
+                var node = this;
+                
+            },
+        });
+</script>
+
+<script type="text/html" data-template-name="k8s-config">
+    <style>
+        .event {
+            display:flex;
+        }        
+        .event .red-ui-typedInput-container {
+            flex:1
+        }
+        .event span {
+            flex:1
+        }
+        .event label {
+            min-width: 110px;
+            align-self: center;
+        }  
+        .padding-top {
+            padding-top: 10px;
+        }
+    </style>   
+
+    <div class="form-row">
+        <label for="node-config-input-name" style="width:160px !important">
+            <i class="fa fa-user"></i>
+            <span>Name:</span></label>
+        <input type="text" id="node-config-input-name" placeholder="" style="width:280px !important">
+    </div>
+    <hr/>
+    <div class="form-row event">
+        <label for="node-config-input-kubeconfig" style="min-width:160px !important">
+            <i class="fa fa-link"></i>
+            <span>kubeconfig</span></label>
+        <input type="text" id="node-config-input-kubeconfig" placeholder="" style="width:100% !important">
+    </div>
+  
+</script>
+
+<script type="text/html" data-help-name="k8s-config">
+    
+
+</script>
