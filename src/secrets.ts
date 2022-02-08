@@ -62,6 +62,34 @@ module.exports = function (RED: any) {
 
                     }));
                 }
+            } else if (config.action === "replace") {
+                let namespace;
+
+                try {
+                    namespace = await k8sApi.readNamespace(config.namespace)
+                }
+                catch {
+                    if (!namespace || namespace.body?.metadata?.name !== config.namespace) {
+                        await k8sApi.createNamespace({
+                            metadata: {
+                                name: config.namespace
+                            }
+                        })
+                    }
+                }
+
+                try {                    
+                    const readRes = await k8sApi.readNamespacedSecret(config.body.metadata.name, config.namespace)
+                    const res = await k8sApi.replaceNamespacedSecret(config.body.metadata.name, config.namespace, config.body)
+                    send(Object.assign(node.msg, {
+                        payload: res.body
+                    }));
+                } catch {
+                    const res = await k8sApi.createNamespacedSecret(config.namespace, config.body)
+                    send(Object.assign(node.msg, {
+                        payload: res.body
+                    }));
+                }
             }
 
             if (done) {
