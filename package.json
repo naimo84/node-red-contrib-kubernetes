@@ -30,6 +30,7 @@
     "nodes": {
       "k8s-secrets": "dist/secrets.js",
       "k8s-namespaces": "dist/namespaces.js",
+      "k8s-pods": "dist/pods.js",
       "k8s-config": "dist/config.js"
     }
   },

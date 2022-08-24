@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-    RED.nodes.registerType('k8s-secrets', {
+    RED.nodes.registerType('k8s-pods', {
         category: 'k8s',
         defaults: {
             kubeconfig: {
@@ -27,10 +27,10 @@
                 return this.confignode.name;
             }
 
-            return 'secrets';
+            return 'pods';
         },
         icon: "kubernetes_logo_40x60.png",
-        paletteLabel: 'secrets',
+        paletteLabel: 'pods',
         oneditprepare: function () {
             const node = this;
 
@@ -43,24 +43,18 @@
                 types: ["json", "msg"]
             });
 
-
             $("#node-input-context").typedInput({
                 typeField: "#node-input-contextType",
                 types: ["str", "msg"]
             });
-
 
             $("#node-input-action").typedInput({
                 typeField: "#node-input-actiontype",
                 default: "action",
                 types: ["str", "msg", {
                     value: "action",
-                    options: [
-                        { value: "get", label: "get" },
-                        { value: "create", label: "create" },
-                        { value: "replace", label: "replace" },
-                        { value: "list", label: "list" },
-                        
+                    options: [                       
+                        { value: "create", label: "create" }
                     ]
                 }]
             });
@@ -68,7 +62,7 @@
     })
 </script>
 
-<script type="text/html" data-template-name="k8s-secrets">
+<script type="text/html" data-template-name="k8s-pods">
     <style>
         .event {
             display: flex;
