@@ -29,7 +29,7 @@ module.exports = function (RED: any) {
                 send(Object.assign(msg, {
                     payload: res.body
                 }));
-            }else if (config.action === "create") {
+            } else if (config.action === "create") {
                 try {
                     const res = await k8sApi.createNamespacedPod(config.namespace, config.body)
                     send(Object.assign(node.msg, {
@@ -40,7 +40,18 @@ module.exports = function (RED: any) {
 
                     }));
                 }
-            } 
+            } else if (config.action === "delete") {
+                try {
+                    const res = await k8sApi.deleteNamespacedPod(config.body.metadata.name, config.namespace)
+                    send(Object.assign(node.msg, {
+                        payload: res.body
+                    }));
+                } catch {
+                    send(Object.assign(node.msg, {
+
+                    }));
+                }
+            }
 
             if (done) {
                 done();
