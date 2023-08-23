@@ -1,10 +1,9 @@
-import { NodeMessage, NodeMessageInFlow } from 'node-red';
-import { getConfig } from './helper';
-import * as k8s from '@kubernetes/client-node';
+const  getConfig = require( 'node-red-contrib-kubernetes/src/helper');
+const k8s = require('@kubernetes/client-node');
 const { join } = require('path');
 
-module.exports = function (RED: any) {
-    function node(n: any) {
+module.exports = function (RED) {
+    function node(n) {
         RED.nodes.createNode(this, n);
         let node = this;
         node.red = RED;
@@ -17,7 +16,7 @@ module.exports = function (RED: any) {
         });
     }
 
-    async function onInput(node, config, msg: NodeMessageInFlow, send: (msg: NodeMessage | NodeMessage[]) => void, done: (err?: Error) => void) {
+    async function onInput(node, config, msg, send , done) {
         try {
             const kc = new k8s.KubeConfig();
             kc.loadFromFile(config.path || join(__dirname, 'kubeconfig'));
@@ -32,10 +31,13 @@ module.exports = function (RED: any) {
             } else if (config.action === "create") {
                 try {
                     const res = await k8sApi.createNamespacedPod(config.namespace, config.body)
+                    console.log(res);
                     send(Object.assign(node.msg, {
                         payload: res.body
                     }));
-                } catch {
+                } catch(err) {
+                    console.log(err);
+                    
                     send(Object.assign(node.msg, {
 
                     }));

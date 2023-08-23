@@ -28,10 +28,10 @@
   "node-red": {
     "version": ">=1.0.0",
     "nodes": {
-      "k8s-secrets": "dist/secrets.js",
-      "k8s-namespaces": "dist/namespaces.js",
-      "k8s-pods": "dist/pods.js",
-      "k8s-config": "dist/config.js"
+      "k8s-secrets": "src/secrets.js",
+      "k8s-namespaces": "src/namespaces.js",
+      "k8s-pods": "src/pods.js",
+      "k8s-config": "src/config.js"
     }
   },
   "repository": {

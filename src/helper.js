@@ -1,5 +1,5 @@
 
-export function getConfig(config, RED: any, node?: any, msg?: any) {
+module.exports = function (config, RED, node, msg) {
     return {
         context: RED?.util.evaluateNodeProperty(node.context, node.contextType, node, msg),
         namespace: RED?.util.evaluateNodeProperty(node.namespace, node.namespaceType, node, msg),

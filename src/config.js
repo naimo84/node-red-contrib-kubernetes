@@ -1,4 +1,4 @@
-module.exports = function (RED: any) {
+module.exports = function (RED) {
     
 
     function icalConfig(config) {
