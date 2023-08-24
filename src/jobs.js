@@ -10,7 +10,7 @@ module.exports = function (RED) {
         node.msg = {};
 
         node.on('input', (msg, send, done) => {
-            node.msg = RED.util.cloneMessage(msg);
+            msg = RED.util.cloneMessage(msg);
             send = send || function () { node.send.apply(node, arguments) }
             onInput(node, getConfig(RED.nodes.getNode(n.kubeconfig), RED, n, msg), msg, send, done);
         });
@@ -21,32 +21,54 @@ module.exports = function (RED) {
             const kc = new k8s.KubeConfig();
             kc.loadFromFile(config.path || join(__dirname, 'kubeconfig'));
             kc.setCurrentContext(config.context);
-            const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
-            
+            const k8sApi = kc.makeApiClient(k8s.BatchV1Api);
+            const k8sCoreApi = kc.makeApiClient(k8s.CoreV1Api);
+
             if (!config.action || config.action === "get") {
-                const res = await k8sApi.listNamespace()
-                send(Object.assign(node.msg, {
+                const res = await k8sApi.readNamespacedJob(config.body.metadata.name, config.namespace)
+                send(Object.assign(msg, {
                     payload: res.body
                 }));
-            } else if (config.action === "create") {
+            }
+            else if (!config.action || config.action === "delete") {
+                const res = await k8sApi.deleteNamespacedJob(config.body.metadata.name, config.namespace)
+                send(Object.assign(msg, {
+                    payload: res.body
+                }));
+            }
+            else if (config.action === "list") {
+                const res = await k8sApi.listNamespacedJob(config.namespace)
+                send(Object.assign(msg, {
+                    payload: res.body
+                }));
+            }
+            else if (config.action === "create") {
                 let namespace;
 
                 try {
-                    namespace = await k8sApi.readNamespace(config.namespace)
+                    namespace = await k8sCoreApi.readNamespace(config.namespace)
                 }
                 catch {
                     if (!namespace || namespace.body?.metadata?.name !== config.namespace) {
-                        const res =  await k8sApi.createNamespace({
+                        await k8sCoreApi.createNamespace({
                             metadata: {
                                 name: config.namespace
                             }
                         })
-                        send(Object.assign(node.msg, {
-                            payload: res.body
-                        }));
                     }
                 }
-            }
+
+                try {
+                    const res = await k8sApi.createNamespacedJob(config.namespace, config.body)
+                    send(Object.assign(node.msg, {
+                        payload: res.body
+                    }));
+                } catch {
+                    send(Object.assign(node.msg, {
+
+                    }));
+                }
+            } 
 
             if (done) {
                 done();
@@ -65,5 +87,5 @@ module.exports = function (RED) {
     }
 
 
-    RED.nodes.registerType('k8s-namespaces', node);
+    RED.nodes.registerType('k8s-jobs', node);
 };

@@ -1,4 +1,4 @@
-const getConfig = require( 'node-red-contrib-kubernetes/src/helper');
+const getConfig = require( './helper');
 const k8s = require('@kubernetes/client-node');
 const { join } = require('path');
 
