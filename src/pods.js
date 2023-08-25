@@ -18,6 +18,7 @@ module.exports = function (RED) {
 
     async function onInput(node, config, msg, send , done) {
         try {
+            node.status({});
             const kc = new k8s.KubeConfig();
             kc.loadFromFile(config.path || join(__dirname, 'kubeconfig'));
             kc.setCurrentContext(config.context);
