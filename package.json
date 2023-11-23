@@ -32,6 +32,7 @@
       "k8s-namespaces": "src/namespaces.js",
       "k8s-pods": "src/pods.js",
       "k8s-jobs": "src/jobs.js",
+      "k8s-cronjobs": "src/cronjobs.js",
       "k8s-config": "src/config.js"
     }
   },
