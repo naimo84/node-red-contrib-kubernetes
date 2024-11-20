@@ -78,7 +78,7 @@ module.exports = function (RED) {
         catch (err) {
             node.status({ fill: 'red', shape: 'ring', text: err.message });
             //@ts-ignore
-            send({ error: err });
+            send(Object.assign(node.msg, { error: err }));
             if (done) {
                 done(err);
             } else {
