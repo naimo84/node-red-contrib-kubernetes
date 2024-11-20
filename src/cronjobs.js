@@ -61,11 +61,11 @@ module.exports = function (RED) {
 
                 try {
                     const res = await k8sApi.createNamespacedCronJob(config.namespace, config.body)
-                    send(Object.assign(node.msg, {
+                    send(Object.assign(msg, {
                         payload: res.body
                     }));
                 } catch {
-                    send(Object.assign(node.msg, {
+                    send(Object.assign(msg, {
 
                     }));
                 }
@@ -78,7 +78,7 @@ module.exports = function (RED) {
         catch (err) {
             node.status({ fill: 'red', shape: 'ring', text: err.message });
             //@ts-ignore
-            send(Object.assign(node.msg, { error: err }));
+            send(Object.assign(msg, { error: err }));
             if (done) {
                 done(err);
             } else {
